@@ -1,0 +1,79 @@
+server:
+  port: ${SERVER_PORT:8080}
+  forward-headers-strategy: ${FORWARD_HEADERS_STRATEGY:none}   # set to "native" behind a reverse proxy
+
+spring:
+  application:
+    name: ai-weather-backend
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/ai_weather?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC}
+    username: ${DB_USERNAME:weather_app}
+    password: ${DB_PASSWORD:}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none            # Flyway owns the schema
+    properties:
+      hibernate.jdbc.time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jackson:
+    default-property-inclusion: always
+    serialization:
+      write-dates-as-timestamps: false
+
+management:
+  endpoints.web.exposure.include: health,info
+  endpoint.health.show-details: never
+
+logging:
+  level:
+    root: INFO
+    com.aiweather: INFO
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  providers:
+    open-meteo:
+      forecast-url: https://api.open-meteo.com/v1/forecast
+      archive-url: https://archive-api.open-meteo.com/v1/archive
+      geocoding-url: https://geocoding-api.open-meteo.com/v1/search
+      public-url: https://open-meteo.com/
+      connect-timeout-ms: 5000
+      read-timeout-ms: 10000
+      max-attempts: 3
+      retry-backoff-ms: 400
+  cache:
+    forecast-ttl-minutes: ${FORECAST_CACHE_TTL_MINUTES:30}
+    forecast-max-stale-hours: 12
+  risk:
+    method-version: "1.0"
+    # SCREENING thresholds on 24-hour rainfall. The daily values follow the rainfall classes commonly
+    # attributed to IMD (moderate 15.6-64.4 mm, heavy 64.5-115.5 mm, very heavy 115.6-204.4 mm).
+    # VERIFY them against current IMD documentation before relying on them; change them here if IMD changes them.
+    moderate-daily-mm: ${RISK_MODERATE_DAILY_MM:15.6}
+    high-daily-mm: ${RISK_HIGH_DAILY_MM:64.5}
+    very-high-daily-mm: ${RISK_VERY_HIGH_DAILY_MM:115.6}
+    # Application-defined (NOT an IMD class): hourly intensity that lifts a day to at least High.
+    high-hourly-mm: ${RISK_HIGH_HOURLY_MM:30}
+    # Application-defined: below this chance of rain, a High/Very high amount is capped at Moderate.
+    min-probability-pct: ${RISK_MIN_PROBABILITY_PCT:40}
+    strong-wind-kmh: 50
+  ml:
+    base-url: ${ML_SERVICE_URL:http://localhost:8000}
+    api-key: ${ML_SERVICE_API_KEY:}
+    connect-timeout-ms: 2000
+    read-timeout-ms: 15000
+  alerts:
+    official-links:
+      - label: India Meteorological Department (official site - open the Warnings section)
+        url: https://mausam.imd.gov.in/
+  retention:
+    snapshot-days: ${SNAPSHOT_RETENTION_DAYS:90}
+  rate-limit:
+    requests-per-minute: ${RATE_LIMIT_PER_MINUTE:120}
+  admin:
+    username: ${ADMIN_USERNAME:admin}
+    password-hash: ${ADMIN_PASSWORD_BCRYPT:}   # empty = admin API disabled

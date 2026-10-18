@@ -1,0 +1,10 @@
+[
+  {"name": "Chennai",         "latitude": 13.0827, "longitude": 80.2707},
+  {"name": "Coimbatore",      "latitude": 11.0168, "longitude": 76.9558},
+  {"name": "Madurai",         "latitude": 9.9252,  "longitude": 78.1198},
+  {"name": "Tiruchirappalli", "latitude": 10.7905, "longitude": 78.7047},
+  {"name": "Cuddalore",       "latitude": 11.7480, "longitude": 79.7714},
+  {"name": "Nagapattinam",    "latitude": 10.7672, "longitude": 79.8449},
+  {"name": "Thoothukudi",     "latitude": 8.7642,  "longitude": 78.1348},
+  {"name": "Salem",           "latitude": 11.6643, "longitude": 78.1460}
+]

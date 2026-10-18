@@ -1,0 +1,30 @@
+# secrets
+.env
+*.env.local
+# python
+ml-service/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# ml data and trained artefacts (reproduce with scripts/train_model.sh)
+ml-service/data/processed/
+ml-service/data/raw/
+ml-service/models/*.joblib
+ml-service/models/metadata.json
+# node
+frontend/node_modules/
+frontend/dist/
+# java
+backend/target/
+# editors / os
+.idea/
+.vscode/
+*.log
+.DS_Store
+
+.env
+**/.env
+frontend/.env.local
+**/__pycache__/
+**/.venv/
+**/node_modules/
